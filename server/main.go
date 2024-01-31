@@ -17,7 +17,8 @@ func main() {
 	mux.HandleFunc("/room/create", controllers.CreateRoom)
 
 	// Chat
-	mux.HandleFunc("/chat/send", controllers.CreateChat)
+	mux.HandleFunc("/chats", controllers.RouterHandler)
+	// mux.HandleFunc("/chat/send", controllers.CreateChat)
 	err := http.ListenAndServe(":4000", mux)
 	if err != nil {
 		panic(err)
