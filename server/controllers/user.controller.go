@@ -10,6 +10,9 @@ import (
 )
 
 func GetUserName(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Expected Get request only", http.StatusMethodNotAllowed)
+	}
 	w.Header().Set("Content-type", "application/json")
 	now := time.Now()
 	newUser := models.User{Name: "test", CreatedAt: now.UnixMilli()}

@@ -2,21 +2,28 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"time"
+
 	"snowball-community.com/chat/models"
 	"snowball-community.com/chat/services"
 	"snowball-community.com/chat/utils"
-	"time"
 )
 
-func CreateChat(w http.ResponseWriter, r *http.Request) {
-
-	if r.Method != http.MethodPost {
-		http.Error(w, "Only Post requests are allowed", http.StatusMethodNotAllowed)
+func RouterHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-type", "application/json")
+	if r.Method == http.MethodGet {
+		loadChats(w, r)
+	} else if r.Method == http.MethodPost {
+		createChat(w, r)
+	} else {
+		http.Error(w, "This request method is not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	w.Header().Set("Content-type", "application/json")
+}
 
+func createChat(w http.ResponseWriter, r *http.Request) {
 	r.Body = http.MaxBytesReader(w, r.Body, 1048576)
 
 	dec := json.NewDecoder(r.Body)
@@ -33,4 +40,11 @@ func CreateChat(w http.ResponseWriter, r *http.Request) {
 	chat.ID = chatId
 
 	utils.WriteEncoder(w, chat)
+}
+
+func loadChats(w http.ResponseWriter, r *http.Request) {
+	var chats []models.Chat = services.FindMany(20, 1)
+	fmt.Println(chats)
+
+	utils.WriteEncoder(w, chats)
 }
