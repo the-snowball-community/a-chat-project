@@ -11,9 +11,9 @@ import (
 	"snowball-community.com/chat/models"
 )
 
-const CHAT_COLLECTION_NAME = "chats"
+const CHAT_COLLECTION_NAME = "messages"
 
-func CreateChat(newChat models.Chat) primitive.ObjectID {
+func CreateMessage(newChat models.Message) primitive.ObjectID {
 	collection := db.GetCollection(CHAT_COLLECTION_NAME)
 	result, err := collection.InsertOne(context.TODO(), newChat)
 	if err != nil {
@@ -23,7 +23,7 @@ func CreateChat(newChat models.Chat) primitive.ObjectID {
 	return result.InsertedID.(primitive.ObjectID)
 }
 
-func FindMany(limit, skip int64) []models.Chat {
+func FindMany(limit, skip int64) []models.Message {
 	filter := bson.D{}
 	opts := options.Find().SetSort(bson.D{{Key: "createdAt", Value: -1}})
 	opts.SetLimit(limit)
@@ -34,13 +34,13 @@ func FindMany(limit, skip int64) []models.Chat {
 	if err != nil {
 		panic(err)
 	}
-	var chats []models.Chat
+	var messages []models.Message
 	for cursor.Next(context.TODO()) {
-		var chat models.Chat
-		if err := cursor.Decode(&chat); err != nil {
+		var message models.Message
+		if err := cursor.Decode(&message); err != nil {
 			panic(err)
 		}
-		chats = append(chats, chat)
+		messages = append(messages, message)
 	}
-	return chats
+	return messages
 }
