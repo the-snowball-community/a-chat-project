@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"snowball-community.com/chat/models"
@@ -43,8 +43,15 @@ func createChat(w http.ResponseWriter, r *http.Request) {
 }
 
 func loadChats(w http.ResponseWriter, r *http.Request) {
-	var chats []models.Chat = services.FindMany(20, 1)
-	fmt.Println(chats)
+	limit, err := strconv.ParseInt(r.URL.Query().Get("limit"), 10, 64)
+	if err != nil || limit < 0 {
+		http.NotFound(w, r)
+	}
+	skip, err := strconv.ParseInt(r.URL.Query().Get("skip"), 10, 64)
+	if err != nil || skip < 0 {
+		http.NotFound(w, r)
+	}
+	var chats []models.Chat = services.FindMany(limit, skip)
 
 	utils.WriteEncoder(w, chats)
 }
