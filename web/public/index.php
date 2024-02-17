@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta chraset="UTF-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Snowball Chat</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -25,7 +25,7 @@
 
 <body>
   <div class="app h-100">
-    <header>
+    <header class="ms-3">
       <nav class="navbar bg-body-tertiary">
         <div class="container-fluid">
           <a class="navbar-brand" href="<?php echo $_SERVER['PHP_SELF'];  ?>">
@@ -42,7 +42,7 @@
             <span class="display-4">반갑습니다. 채팅에 참여해보세요</span>
           </div>
           <div class="col-auto">
-            <button type="button" class="btn btn-primary" onclick="goToChat();">Enter!</button>
+            <button type="button" class="btn btn-primary" id="goToChat">Enter!</button>
           </div>
         </div>
       </div>
@@ -53,7 +53,9 @@
 
 </html>
 <script type="text/javascript">
-const goToChat = () => {
-  location.href = './chat.php';
-}
+$( document ).ready( function() {
+  $( "#goToChat" ).click( function() {
+    $( location ).attr( "href","./chat.php" );
+  } );
+} );
 </script>
