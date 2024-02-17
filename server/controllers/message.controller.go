@@ -12,6 +12,7 @@ import (
 )
 
 func RouterHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-type", "application/json")
 	if r.Method == http.MethodGet {
 		loadMessages(w, r)

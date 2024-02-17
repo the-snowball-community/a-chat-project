@@ -10,6 +10,7 @@ import (
 )
 
 func GetUserName(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if r.Method != http.MethodGet {
 		http.Error(w, "Expected Get request only", http.StatusMethodNotAllowed)
 	}
