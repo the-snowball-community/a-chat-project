@@ -3,6 +3,8 @@ package main
 import (
 	"net/http"
 
+	"golang.org/x/net/websocket"
+
 	"snowball-community.com/chat/controllers"
 	"snowball-community.com/chat/db"
 )
@@ -15,10 +17,10 @@ func main() {
 	// Rooms
 	mux.HandleFunc("/rooms", controllers.GetRoom)
 	// mux.HandleFunc("/room/create", controllers.CreateRoom)
+	mux.Handle("/rooms/connect", websocket.Handler(controllers.ConnectRoom))
 
-	// Chat
+	//tMessages
 	mux.HandleFunc("/messages", controllers.RouterHandler)
-	// mux.HandleFunc("/chat/send", controllers.CreateChat)
 	err := http.ListenAndServe(":4000", mux)
 	if err != nil {
 		panic(err)
