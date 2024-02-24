@@ -16,8 +16,8 @@ func main() {
 
 	// Rooms
 	mux.HandleFunc("/rooms", controllers.GetRoom)
+	mux.Handle("/rooms/connect", websocket.Handler(controllers.HandleConnection))
 	// mux.HandleFunc("/room/create", controllers.CreateRoom)
-	mux.Handle("/rooms/connect", websocket.Handler(controllers.ConnectRoom))
 
 	//tMessages
 	mux.HandleFunc("/messages", controllers.RouterHandler)
