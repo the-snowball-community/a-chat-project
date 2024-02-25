@@ -75,12 +75,15 @@ $chatLineMe .= '</div>';
         
       <!-- write message -->
       <div class="col-md-8 mx-auto py-5 fixed-bottom">
-        <form method="POST" action="./../src/UserControl.php" autocomplete="off">
-          <label for="chatMessage" class="visually-hidden">채팅을 입력하세요.</label>
+        <form method="POST" id="contentForm" autocomplete="off">
+          <input type="hidden" name="userId" value="1234">
+          <input type="hidden" name="userName" value="무뚝뚝한여우">
+          <input type="hidden" name="roomId" value="102939">
+          <label for="content" class="visually-hidden">채팅을 입력하세요.</label>
           <div class="input-group">
-            <input type="text" class="form-control" name="chatMessage" placeholder="채팅을 입력하세요." aria-label="채팅을 입력하세요." aria-describedby="sendMessage">
+            <input type="text" class="form-control" name="content" placeholder="채팅을 입력하세요." aria-label="채팅을 입력하세요." aria-describedby="sendMessage">
             <div class="input-group-append">
-              <button class="btn btn-outline-secondary" id="sendMessage" type="button" >전송</button>
+              <button class="btn btn-outline-secondary" id="sendMessage" type="submit" >전송</button>
             </div>
           </div>
         </form>
@@ -90,18 +93,102 @@ $chatLineMe .= '</div>';
 <script>
 $(document).ready(function() {
   getRandUser();
-  alert('반갑습니다. 채팅방에 참여하였습니다.');
+  getMessages();
+  // alert('반갑습니다. 채팅방에 참여하였습니다.');
+
+  $("form").on("submit", function(event) {
+    sendMessage();
+
+    event.preventDefault();
+  });
 });
 
 const getRandUser = () => {
   console.log("get Rand Username");
   $.ajax({
     type: "GET",
+    url: "",
     dataType: "json",
     timeout: 5000
   })
   .done(function(result) {
+    console.dir(result);
     $("#userName").prepend(result.name);
+  })
+  .fail(function(jqXHR, textStatus) {
+    console.log(textStatus);
+  })
+}
+// const sendMessage = async() => {
+//   console.log('start send message');
+//   const contents = $("#contentForm").serializeArray();
+//   let param = {};
+
+//   contents.map(function(data,index){
+//     param[data.name] = data.value;
+//   })
+//   console.dir(param);
+//   let url = "";
+//   const response = await fetch(url, {
+//     method: "POST", // *GET, POST, PUT, DELETE, etc.
+//     headers: {
+//       "Content-Type": "application/json",
+//       // 'Content-Type': 'application/x-www-form-urlencoded',
+//     },
+//     body: JSON.stringify( {
+//       "userId": param.userId,
+//       "roomId": param.roomId,
+//       "userName": param.userName,
+//       "content": param.content
+//     }) // body data type must match "Content-Type" header
+//   });
+//   let test = response.json();
+//   console.log(test);
+// }
+
+
+const sendMessage = () => {
+  console.log('start send message');
+  const contents = $("#contentForm").serializeArray();
+  let param = {};
+
+  contents.map(function(data,index){
+    param[data.name] = data.value;
+  })
+  console.dir(param);
+  $.ajax({
+    type: "POST",
+    url: "",
+    dataType: "json",
+    contentType: 'application/json',
+    timeout: 5000,
+    data:JSON.stringify( {
+      "userId": param.userId,
+      "roomId": param.roomId,
+      "userName": param.userName,
+      "content": param.content
+    })
+  })
+  .done(function(result) {
+    console.log(result);
+  })
+  .fail(function(jqXHR, textStatus) {
+    console.log(textStatus);
+  })
+}
+
+const getMessages = () => {
+  console.log('get start');
+  $.ajax({
+    type: "GET",
+    url: "",
+    dataType: "json",
+    timeout: 5000
+  })
+  .done(function(result) {
+    console.dir(result);
+    // $("#userName").html(result);
+    // console.log(result);
   })
   .fail(function(jqXHR, textStatus) {
     console.log(textStatus);
