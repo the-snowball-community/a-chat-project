@@ -5,22 +5,24 @@ import (
 
 	"golang.org/x/net/websocket"
 
-	"snowball-community.com/chat/controllers"
 	"snowball-community.com/chat/db"
+	"snowball-community.com/chat/features/message"
+	"snowball-community.com/chat/features/room"
+	"snowball-community.com/chat/features/user"
 )
 
 func main() {
 	db.GetDB()
 	mux := http.NewServeMux()
-	mux.HandleFunc("/users/username", controllers.GetUserName)
+	mux.HandleFunc("/users/username", user.GetUserName)
 
 	// Rooms
-	mux.HandleFunc("/rooms", controllers.GetRoom)
-	mux.Handle("/rooms/connect", websocket.Handler(controllers.HandleConnection))
-	// mux.HandleFunc("/room/create", controllers.CreateRoom)
+	mux.HandleFunc("/rooms", room.Get)
+	mux.Handle("/rooms/connect", websocket.Handler(room.HandleConnection))
+	// mux.HandleFunc("/rooms/create", room.Create)
 
 	//tMessages
-	mux.HandleFunc("/messages", controllers.RouterHandler)
+	mux.HandleFunc("/messages", message.RouterHandler)
 	err := http.ListenAndServe(":4000", mux)
 	if err != nil {
 		panic(err)

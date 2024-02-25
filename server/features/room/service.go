@@ -1,8 +1,9 @@
-package services
+package room
 
 import (
 	"context"
 	"fmt"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"snowball-community.com/chat/db"
