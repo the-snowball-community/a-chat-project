@@ -1,30 +1,27 @@
 package main
 
 import (
+	"log"
 	"net/http"
-
-	"golang.org/x/net/websocket"
+	"time"
 
 	"snowball-community.com/chat/db"
-	"snowball-community.com/chat/features/message"
-	"snowball-community.com/chat/features/room"
-	"snowball-community.com/chat/features/user"
 )
 
 func main() {
 	db.GetDB()
-	mux := http.NewServeMux()
-	mux.HandleFunc("/users/username", user.GetUserName)
+	app := application{}
 
-	// Rooms
-	mux.HandleFunc("/rooms", room.Get)
-	mux.Handle("/rooms/connect", websocket.Handler(room.HandleConnection))
-	// mux.HandleFunc("/rooms/create", room.Create)
+	svr := &http.Server{
+		Addr:         ":4000",
+		Handler:      app.route(),
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 30 * time.Second,
+	}
 
-	//tMessages
-	mux.HandleFunc("/messages", message.RouterHandler)
-	err := http.ListenAndServe(":4000", mux)
+	err := svr.ListenAndServe()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }
