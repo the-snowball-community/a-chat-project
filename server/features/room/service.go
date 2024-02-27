@@ -7,10 +7,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"snowball-community.com/chat/db"
-	"snowball-community.com/chat/models"
 )
 
-func CreateRoom(newRoom models.Room) primitive.ObjectID {
+func CreateRoom(newRoom Room) primitive.ObjectID {
 	collection := db.GetCollection("rooms")
 	result, err := collection.InsertOne(context.TODO(), newRoom)
 	if err != nil {
@@ -20,11 +19,11 @@ func CreateRoom(newRoom models.Room) primitive.ObjectID {
 	return result.InsertedID.(primitive.ObjectID)
 }
 
-func GetRoom() models.Room {
+func GetRoom() Room {
 	filter := bson.D{}
 	collection := db.GetCollection("rooms")
 
-	var result models.Room
+	var result Room
 	err := collection.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
 		panic(err)

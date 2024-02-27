@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"time"
 
-	"snowball-community.com/chat/models"
 	"snowball-community.com/chat/utils"
 )
 
@@ -34,7 +33,7 @@ func create(w http.ResponseWriter, r *http.Request) {
 	dec := json.NewDecoder(r.Body)
 	dec.DisallowUnknownFields()
 
-	var message models.Message
+	var message Message
 	err := dec.Decode(&message)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -56,7 +55,7 @@ func load(w http.ResponseWriter, r *http.Request) {
 	if err != nil || skip < 0 {
 		http.NotFound(w, r)
 	}
-	var messages []models.Message = FindMany(limit, skip)
+	var messages []Message = FindMany(limit, skip)
 
 	utils.WriteEncoder(w, messages)
 }
