@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
 
 	"golang.org/x/net/websocket"
@@ -15,14 +15,26 @@ type application struct{}
 func healthcheck(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		return
 	}
-	fmt.Println("The server is running correctly")
+
+	data := map[string]string{
+		"status": "available",
+		"port":   ":4000",
+	}
+	js, err := json.MarshalIndent(data, "", "  ")
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
 }
 
 func (app *application) route() *http.ServeMux {
 	mux := http.NewServeMux()
 	/// Health Check
-	mux.HandleFunc("/healthcheck", healthcheck)
+	mux.HandleFunc("/health", healthcheck)
 
 	/// Users
 	mux.HandleFunc("/users/username", user.GetUserName)
