@@ -7,7 +7,6 @@ import (
 
 	"golang.org/x/net/websocket"
 
-	"snowball-community.com/chat/models"
 	"snowball-community.com/chat/utils"
 )
 
@@ -15,10 +14,10 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-type", "application/json")
 	now := time.Now()
-	newRoom := models.Room{CreatedAt: now.UnixMilli()}
+	newRoom := Room{CreatedAt: now.UnixMilli()}
 	user := CreateRoom(newRoom)
 
-	utils.WriteEncoder(w, models.Room{ID: user, CreatedAt: newRoom.CreatedAt})
+	utils.WriteEncoder(w, Room{ID: user, CreatedAt: newRoom.CreatedAt})
 }
 
 func Get(w http.ResponseWriter, r *http.Request) {

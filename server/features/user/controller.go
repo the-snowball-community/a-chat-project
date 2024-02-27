@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"time"
-
-	"snowball-community.com/chat/models"
 )
 
 func GetUserName(w http.ResponseWriter, r *http.Request) {
@@ -15,10 +13,10 @@ func GetUserName(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-type", "application/json")
 	now := time.Now()
-	newUser := models.User{Name: CreateRandomUserName(), CreatedAt: now.UnixMilli()}
+	newUser := User{Name: CreateRandomUserName(), CreatedAt: now.UnixMilli()}
 	user := CreateUser(newUser)
 
-	err := json.NewEncoder(w).Encode(models.User{ID: user, Name: newUser.Name, CreatedAt: newUser.CreatedAt})
+	err := json.NewEncoder(w).Encode(User{ID: user, Name: newUser.Name, CreatedAt: newUser.CreatedAt})
 	if err != nil {
 		panic(err)
 	}

@@ -8,12 +8,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"snowball-community.com/chat/db"
-	"snowball-community.com/chat/models"
 )
 
 const CHAT_COLLECTION_NAME = "messages"
 
-func CreateMessage(newChat models.Message) primitive.ObjectID {
+func CreateMessage(newChat Message) primitive.ObjectID {
 	collection := db.GetCollection(CHAT_COLLECTION_NAME)
 	result, err := collection.InsertOne(context.TODO(), newChat)
 	if err != nil {
@@ -23,7 +22,7 @@ func CreateMessage(newChat models.Message) primitive.ObjectID {
 	return result.InsertedID.(primitive.ObjectID)
 }
 
-func FindMany(limit, skip int64) []models.Message {
+func FindMany(limit, skip int64) []Message {
 	filter := bson.D{}
 	opts := options.Find().SetSort(bson.D{{Key: "createdAt", Value: -1}})
 	opts.SetLimit(limit)
@@ -34,9 +33,9 @@ func FindMany(limit, skip int64) []models.Message {
 	if err != nil {
 		panic(err)
 	}
-	var messages []models.Message
+	var messages []Message
 	for cursor.Next(context.TODO()) {
-		var message models.Message
+		var message Message
 		if err := cursor.Decode(&message); err != nil {
 			panic(err)
 		}
