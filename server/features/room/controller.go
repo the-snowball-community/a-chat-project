@@ -5,8 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"golang.org/x/net/websocket"
-
+	"github.com/gorilla/websocket"
 	"snowball-community.com/chat/utils"
 )
 
@@ -31,45 +30,67 @@ type Client struct {
 	channel string
 }
 
-var clients = make(map[*Client]bool)
+var clients []Client
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
+func ConnectRoom(w http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	clients = append(clients, Client{ws: conn, channel: "channelId"})
+}
 
 func HandleConnection(ws *websocket.Conn) {
-	client := &Client{ws: ws}
+	// fmt.Println("Trying Connection")
+	// conn, err := upgrader.Upgrade(w, r, nil)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return
+	// }
+	// fmt.Println("Client connected")
+	// conn.Close()
+	// client := &Client{ws: ws}
 
-	clients[client] = true
+	// clients[client] = true
 
-	log.Printf("Client connected")
+	// log.Printf("Client connected")
 
-	for {
-		var msg map[string]interface{}
-		if err := websocket.JSON.Receive(ws, &msg); err != nil {
-			log.Println(err)
-			delete(clients, client)
-			break
-		}
+	// for {
+	// 	var msg map[string]interface{}
+	// 	if err := websocket.JSON.Receive(ws, &msg); err != nil {
+	// 		log.Println(err)
+	// 		delete(clients, client)
+	// 		break
+	// 	}
 
-		action, ok := msg["action"].(string)
-		if !ok {
-			log.Println("Invalid action")
-			continue
-		}
+	// 	action, ok := msg["action"].(string)
+	// 	if !ok {
+	// 		log.Println("Invalid action")
+	// 		continue
+	// 	}
 
-		switch action {
-		case "subscribe":
-			channel, ok := msg["channelId"].(string)
-			if !ok {
-				log.Println("Invalid channel ID")
-				continue
-			}
-			client.channel = channel
-			log.Printf("Client subscribed to channel %s", channel)
+	// 	switch action {
+	// 	case "subscribe":
+	// 		channel, ok := msg["channelId"].(string)
+	// 		if !ok {
+	// 			log.Println("Invalid channel ID")
+	// 			continue
+	// 		}
+	// 		client.channel = channel
+	// 		log.Printf("Client subscribed to channel %s", channel)
 
-		case "unsubscribe":
-			client.channel = ""
-			log.Printf("Client unsubscribed from channel")
+	// 	case "unsubscribe":
+	// 		client.channel = ""
+	// 		log.Printf("Client unsubscribed from channel")
 
-		default:
-			log.Println("Unknown action:", action)
-		}
-	}
+	// 	default:
+	// 		log.Println("Unknown action:", action)
+	// 	}
+	// }
 }
