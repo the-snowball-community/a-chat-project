@@ -2,10 +2,12 @@ package message
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
 
+	"snowball-community.com/chat/features/room"
 	"snowball-community.com/chat/utils"
 )
 
@@ -42,6 +44,13 @@ func create(w http.ResponseWriter, r *http.Request) {
 	message.CreatedAt = time.Now().UnixMilli()
 	messageId := CreateMessage(message)
 	message.ID = messageId
+	fmt.Println("message creation")
+	fmt.Println(message)
+
+	clients := room.GetClients()
+	for _, c := range clients {
+		c.Ws.WriteJSON(message)
+	}
 
 	utils.WriteEncoder(w, message)
 }

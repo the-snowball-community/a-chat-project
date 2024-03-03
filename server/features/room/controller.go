@@ -26,8 +26,8 @@ func Get(w http.ResponseWriter, r *http.Request) {
 }
 
 type Client struct {
-	ws      *websocket.Conn
-	channel string
+	Ws      *websocket.Conn
+	Channel string
 }
 
 var clients []Client
@@ -43,7 +43,12 @@ func ConnectRoom(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	clients = append(clients, Client{ws: conn, channel: "channelId"})
+	/// TODO: get a room number from db or user
+	clients = append(clients, Client{Ws: conn, Channel: "65bace72b0200e4234de6e50"})
+}
+
+func GetClients() []Client {
+	return clients
 }
 
 func HandleConnection(ws *websocket.Conn) {
