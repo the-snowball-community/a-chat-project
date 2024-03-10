@@ -5,8 +5,9 @@ go 1.21.0
 require (
 	github.com/joho/godotenv v1.5.1
 	go.mongodb.org/mongo-driver v1.13.1
-	golang.org/x/net v0.21.0
 )
+
+require golang.org/x/net v0.21.0 // indirect
 
 require (
 	github.com/golang/snappy v0.0.1 // indirect
